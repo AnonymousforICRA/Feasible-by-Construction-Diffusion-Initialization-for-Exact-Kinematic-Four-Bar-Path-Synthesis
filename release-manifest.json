@@ -1,0 +1,116 @@
+{
+  "format_version": 1,
+  "history": "fresh anonymous export",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 7229,
+      "sha256": "e075c0e1488eb2f17c23d7e0307a9fbff5637747e695bd499805d678affddb2d"
+    },
+    {
+      "file": "style.css",
+      "bytes": 10602,
+      "sha256": "0b6ee3adb3cb5f133d1a4a27f5db2e121eb43adc7f9fd460434de722438beebb"
+    },
+    {
+      "file": "app.js",
+      "bytes": 25089,
+      "sha256": "d291fba59f542fefad63ff31c24a15bcd47694df9c7f01f43cab31b0a64840cf"
+    },
+    {
+      "file": "config.js",
+      "bytes": 319,
+      "sha256": "b65641b2227d09a65fa9a119c0b3f6e353f3f79bba357f16d1b5110665501a03"
+    },
+    {
+      "file": "browser-engine.js",
+      "bytes": 1714,
+      "sha256": "575e422f196e6a7ebb5cb32f9032af38ae01229514bab306d58ab735705634ee"
+    },
+    {
+      "file": "engine-worker.js",
+      "bytes": 4173,
+      "sha256": "bb1647b5c83fd8d4e094c8572b636ccf6f5c8659b35d6caad0a33f222f35d6a2"
+    },
+    {
+      "file": "curve-input.js",
+      "bytes": 3174,
+      "sha256": "ce4ac073415a29e3bbe737ebb808498f71aa51514effb325bc6634a8f115bdad"
+    },
+    {
+      "file": "kinematics.js",
+      "bytes": 16642,
+      "sha256": "6411375663a0e3dc1bab7c2047da1d9661a3b24a0d7ea1d27e13db4f31afbc64"
+    },
+    {
+      "file": "denoiser.js",
+      "bytes": 10625,
+      "sha256": "cc4586519a76990c44ecbc75195ccbfb9ccaac16980a3f9360eea0f84e9923b0"
+    },
+    {
+      "file": "README.md",
+      "bytes": 4742,
+      "sha256": "329fbd6429fafd55a47f9e4bf8085a3e04efb1cb8b1f6146a0b778f514fc4b43"
+    },
+    {
+      "file": "VALIDATION.md",
+      "bytes": 4020,
+      "sha256": "90f8a3815e2e728bd7ba03175869cda61fe1944219e694396f835b1b274eb896"
+    },
+    {
+      "file": ".nojekyll",
+      "bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "file": ".gitignore",
+      "bytes": 30,
+      "sha256": "9a20c0027a728186cf0363e888ed743eae7c379ff4f27c01c8c326e9939c77c0"
+    },
+    {
+      "file": ".github/workflows/pages.yml",
+      "bytes": 604,
+      "sha256": "03d1684424607b451c9082dc321602f333055ab6dd7dbb4c8f2b8b9e63e5eaf3"
+    },
+    {
+      "file": "weights/model.onnx",
+      "bytes": 7077213,
+      "sha256": "d9e3233d4bbae0bb8af4be0abf7460933e2cccb8243a2153366ed343ae33d62e"
+    },
+    {
+      "file": "weights/model.json",
+      "bytes": 22331,
+      "sha256": "3d4703fe6cdfc0e6f7b13c722122834caa00cd40592967cb52f1ab6326d955bf"
+    },
+    {
+      "file": "vendor/ort.wasm.min.mjs",
+      "bytes": 48259,
+      "sha256": "6ef726f355b791129f7ddf3f62e7877a16b9b777abe87004b8ab306e6b9cf265"
+    },
+    {
+      "file": "vendor/ort-wasm-simd-threaded.mjs",
+      "bytes": 20856,
+      "sha256": "30dd851d9c00622940500f71ddd2ff8820c5cb65270816080175b958705385a8"
+    },
+    {
+      "file": "vendor/ort-wasm-simd-threaded.wasm",
+      "bytes": 11210254,
+      "sha256": "71aef04959c5c1b6de461b6538e2058e306610034a85aad2742d0c7fd4533fe4"
+    },
+    {
+      "file": "vendor/LICENSE-onnxruntime.txt",
+      "bytes": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    {
+      "file": "vendor/ThirdPartyNotices.txt",
+      "bytes": 326866,
+      "sha256": "e9e90971a8e75a9a8ac0c6412e29c1202d079998389915aa485f46c816c3b4cc"
+    },
+    {
+      "file": "vendor/README.md",
+      "bytes": 459,
+      "sha256": "653046a077a99445e5e85918141d0c355f600baa26503ccb49550390036886bd"
+    }
+  ]
+}

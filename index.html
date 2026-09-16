@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="An interactive four-bar path-synthesis demonstration with exact-kinematic playback.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <title>Four-Bar Path Synthesis · Interactive Demonstration</title>
+</head>
+<body>
+  <header class="page-header">
+    <div class="eyebrow"><span class="brand-mark" aria-hidden="true">◈</span> INTERACTIVE RESEARCH DEMONSTRATION</div>
+    <h1>Feasible-by-Construction Diffusion Initialization for Exact Kinematic Four-Bar Path Synthesis</h1>
+    <p class="intro">Explore a single-actuator mechanism, its target path, and the trajectory it can actually realize.</p>
+  </header>
+
+  <main class="workspace">
+    <aside class="sidebar" aria-label="Demonstration controls">
+      <div class="mode-switch" role="group" aria-label="Demonstration mode">
+        <button id="mode-recorded" type="button" class="mode-button active" aria-pressed="true">Known mechanisms</button>
+        <button id="mode-browser" type="button" class="mode-button" aria-pressed="false">Draw a path</button>
+      </div>
+
+      <section id="recorded-panel">
+        <div class="section-heading"><span class="step-number">01</span><h2>Choose a realizable target</h2></div>
+        <p class="help">These paths are constructed from known legal mechanisms using exact forward kinematics. They are not model predictions.</p>
+        <div id="example-list" class="example-list" aria-label="Known mechanism presets"><p class="help">Loading known mechanisms…</p></div>
+        <div class="disclosure"><strong>Constructed preset · no model inference</strong><span>Use the target below to generate new candidates with the browser model.</span></div>
+        <button id="use-target" class="secondary-button wide" type="button">Use this target for inference</button>
+      </section>
+
+      <section id="browser-panel" hidden>
+        <div class="section-heading"><span class="step-number">01</span><h2>Sketch a closed path</h2></div>
+        <p class="help">Draw one continuous stroke with a mouse or touch. The sketch is a closed polyline: a straight segment joins the end to the start, with no smoothing or corner removal.</p>
+        <div class="engine-status"><span id="engine-indicator" class="status-dot"></span><strong id="engine-state">Model not loaded</strong></div>
+        <p id="engine-detail" class="help" role="status" aria-live="polite">Inference uses this device’s CPU through WebAssembly. Initial model and runtime download: about 18 MB. No GPU or inference server is required.</p>
+        <button id="load-model" class="secondary-button wide" type="button">Load browser model</button>
+        <label class="profile-control" for="inference-profile">Inference budget<select id="inference-profile"><option value="fast_v1" selected>Fast · K32 / DDIM25 · no refinement</option><option value="quality_v2">Quality · K64 / DDIM50 · 472 FK calls</option></select></label>
+        <div class="action-row">
+          <button id="clear-sketch" class="secondary-button" type="button">Clear sketch</button>
+          <button id="generate" class="primary-button" type="button" disabled>Generate</button>
+        </div>
+        <p class="small-note">CPU computation may take time, especially in Quality mode. Failed inference never substitutes a known mechanism.</p>
+      </section>
+
+      <section class="candidate-section">
+        <div class="section-heading"><span class="step-number">02</span><h2 id="candidate-heading">Known geometry</h2></div>
+        <p id="candidate-empty" class="help">Model candidates appear after completing a browser inference run.</p>
+        <div id="candidate-list" class="candidate-list" aria-label="Mechanism candidates"></div>
+      </section>
+
+      <section id="measurement-panel" hidden>
+        <div class="section-heading"><span class="step-number">03</span><h2>Inspect the mechanism</h2></div>
+        <div id="error-card" class="error-card"><span>Web similarity error</span><strong id="error-value">—</strong></div>
+        <p id="metric-note" class="small-note">A similarity-aligned sketch-fit measure, not the paper benchmark metric. Lower is better.</p>
+        <dl id="inference-audit" class="parameter-list" hidden></dl>
+        <dl id="parameter-list" class="parameter-list"></dl>
+        <p class="small-note">Canonical lengths are normalized to the ground link, r₁ = 1. P is fixed to the coupler.</p>
+      </section>
+    </aside>
+
+    <section class="viewer" aria-label="Mechanism viewer">
+      <div class="viewer-header">
+        <div><span id="result-kind" class="result-kind">CONSTRUCTED PRESET · NO MODEL INFERENCE</span><h2 id="result-title">Four-bar path synthesis</h2></div>
+        <button id="fit-view" type="button" class="text-button">Fit view <span aria-hidden="true">↗</span></button>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="mechanism-canvas" aria-label="Target path, realized coupler trajectory, and animated four-bar mechanism"></canvas>
+        <div id="canvas-empty" class="canvas-empty"><span class="empty-symbol" aria-hidden="true">↗</span><strong>Loading the demonstration</strong><span>Known mechanisms will appear here.</span></div>
+        <div id="drawing-hint" class="drawing-hint" hidden>Draw a closed path here</div>
+        <div class="canvas-legend"><span><i class="legend-target"></i>Target</span><span><i class="legend-trajectory"></i>Realized trajectory</span><span><i class="legend-link"></i>Mechanism</span></div>
+      </div>
+      <div class="playback-controls">
+        <button id="play-pause" type="button" class="play-button" disabled aria-label="Play animation">Play</button>
+        <label class="phase-control" for="phase"><span>Crank phase <output id="phase-value" for="phase">0°</output></span><input id="phase" type="range" min="0" max="1000" step="1" value="0" disabled></label>
+        <label class="speed-control" for="speed">Speed<select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+      </div>
+      <div class="visibility-controls"><label><input id="show-mechanism" type="checkbox" checked> Show mechanism</label><label><input id="show-target" type="checkbox" checked> Show target</label><span>Uniform-phase visual playback · not a motion-control plan</span></div>
+      <p id="viewer-status" class="viewer-status" role="status" aria-live="polite">Loading exact-kinematic presets…</p>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p><strong>A realizable mechanism, not an arbitrary path follower.</strong> This fixed-topology, one-degree-of-freedom four-bar generally approximates a target; it cannot exactly reproduce every sketch or mathematical corner.</p>
+    <p>Dashed lines show the target. The solid trajectory and moving linkage come from exact forward kinematics. Playback does not certify dynamics, collision avoidance, or a controller.</p>
+  </footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
