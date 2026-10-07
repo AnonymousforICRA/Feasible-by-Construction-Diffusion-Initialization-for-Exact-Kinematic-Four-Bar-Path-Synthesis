@@ -1,5 +1,34 @@
 # Browser implementation scope
 
+## Post-submission presentation extension
+
+UI v3 adds explicit Draw/Inspect tools, undo, one-click Quality synthesis,
+local JSON import, model-hash-gated replay and five-entry in-memory history.
+No inference-engine or model files change. Camera movement cannot change the
+target, error or mechanism parameters. The inference record remains v2.
+
+Import checks the schema, size/nesting limits, normalized full-crank parameters,
+every FK frame/curve, alignment, Web scores and original-to-processed target.
+These geometry checks do not authenticate a file's claimed model execution,
+candidate pool, budget or timing. The UI and re-exports retain an imported-record
+label. Import verification evaluates FK locally, outside any recorded synthesis
+budget; it is not an optimizer run. Replay is a new inference action, not a claim
+that the imported historical run has been authenticated.
+
+The v2 preview retains the same model bytes, sampling profiles, FK implementation,
+refinement rule and winner selection. New initial/final views reuse the scored
+curves from one candidate pool. A separate initial animation can add one
+display-only FK evaluation; selection budgets remain Fast 32 / Quality 472.
+Candidate cards retain the existing score-ordered unit-coordinate separation
+filter; they do not establish exhaustive or uniform solution diversity.
+
+JSON exports retain raw inputs, processed inputs, candidates and run metadata.
+SVG/PNG draw those stored geometries with independent uniform-aspect cameras,
+not re-optimized, smoothed or exaggerated paths. The selected alternative is
+explicitly distinguished from the pool's best-to-best comparison. Fast exports
+state that refinement was not applied. Exports certify neither timing/control
+nor manufacturability. Intermediate optimizer states are not currently recorded.
+
 This is a real, client-side inference port, not a remote API or a lookup table.
 The frozen EMA denoiser is exported without optimizer state, training records,
 or dataset examples. All required runtime and model assets are self-hosted.

@@ -13,7 +13,8 @@ async function run(points,options,progress) {
   const target=prepareCurve(points);
   if(options.profile && !['quality_v2','fast_v1'].includes(options.profile))throw new Error('Unsupported browser profile.');
   const quality=options.profile!=='fast_v1',k=quality?64:32,steps=quality?50:25;
-  await loadDenoiser(progress);
+  // loadDenoiser resolves only after checking the downloaded ONNX SHA-256.
+  const metadata=await loadDenoiser(progress);
   progress({message:'Encoding 32 orientation / phase / direction conditions'});
   const units=await sample(conditionPool(target,k),{steps,seed:options.seed??20260726},progress);
   let calls=0;
@@ -43,19 +44,35 @@ async function run(points,options,progress) {
     if(selected.some(x=>Math.hypot(...x.unit.map((v,i)=>v-candidate.unit[i]))<=0.10))continue;
     selected.push(candidate);if(selected.length===6)break;
   }
-  const solutions=selected.map(c=>({
+  const toSolution=c=>({
     params:{r1:1,r2:c.p[0],r3:c.p[1],r4:c.p[2],px:c.p[3],py:c.p[4]},
     transform:c.matched.transform,error_percent:100*c.matched.error,
     frames:frames(c.p,240),coupler_curve:c.curve,source:c.source,
     mechanism_family:'strict_full_crank_fourbar_branch_plus',path_closed:true,
-  }));
+  });
+  const solutions=selected.map(toSolution);
+  // Keep the actual raw winner of this same candidate pool. Its scored trace
+  // and alignment are reused; only animation frames may need to be generated.
+  // This is a best-of-pool comparison, not a claimed trajectory of one start.
+  const rawSelectedIndex=selected.indexOf(initial[0]);
+  const initialBest=rawSelectedIndex>=0?solutions[rawSelectedIndex]:toSolution(initial[0]);
+  const comparisonDisplayTraces=rawSelectedIndex>=0?0:1;
   if(calls!==(quality?472:32)||getEvaluationCounts().trace!==calls)throw new Error('Mechanics query budget audit failed.');
+  if(getEvaluationCounts().frames!==solutions.length+comparisonDisplayTraces)throw new Error('Display animation budget audit failed.');
   return {
     solutions,clean_curve:target,path:{closed:true},backend:'browser_onnx_exact_fk',
     profile:quality?'browser_quality_v1':'browser_fast_v1',
     metric:'web_similarity_rms_v1',
-    audit:{selection_fk_calls:calls,display_traces:solutions.length,candidates:k,ddim_steps:steps,
+    comparison:{kind:'same_pool_best',refinement_applied:quality,
+      initial_best:initialBest,final_best_index:0},
+    reproducibility:{seed:options.seed??20260726,requested_profile:options.profile??'quality_v2',
+      model_sha256:metadata.export_sha256,demo_version:'post-submission-v2'},
+    audit:{selection_fk_calls:calls,display_traces:solutions.length+comparisonDisplayTraces,
+      solution_display_traces:solutions.length,comparison_display_traces:comparisonDisplayTraces,
+      candidates:k,ddim_steps:steps,
       raw_best_error_percent:100*initial[0].matched.error,
+      selection_policy:'score_sorted_unit_distance_filter',unit_distance_threshold:0.10,
+      diversity_guarantee:false,
       strict_valid_candidates:k,total_candidates:k,
       refinement_steps:quality?100:0,
       gradient:'forward_mode_automatic_differentiation',

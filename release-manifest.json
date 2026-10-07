@@ -4,18 +4,33 @@
   "files": [
     {
       "file": "index.html",
-      "bytes": 7229,
-      "sha256": "e075c0e1488eb2f17c23d7e0307a9fbff5637747e695bd499805d678affddb2d"
+      "bytes": 13416,
+      "sha256": "e1e89d9824783ef64ea705c86872b606abdf60bee8a2114f36bdcd0b6c1ae9dc"
     },
     {
       "file": "style.css",
-      "bytes": 10602,
-      "sha256": "0b6ee3adb3cb5f133d1a4a27f5db2e121eb43adc7f9fd460434de722438beebb"
+      "bytes": 19939,
+      "sha256": "7bd0f4403fd37c7197f24c1fe73e956b38fa8c8ccbec42fd2019f3f2e5e49be9"
     },
     {
       "file": "app.js",
-      "bytes": 25089,
-      "sha256": "d291fba59f542fefad63ff31c24a15bcd47694df9c7f01f43cab31b0a64840cf"
+      "bytes": 50226,
+      "sha256": "1d3e0c8bacee3e70f257c26cf7d563b0032ea6e445ed5bb2b303857206bf2234"
+    },
+    {
+      "file": "presentation.js",
+      "bytes": 16192,
+      "sha256": "6df7012c5e58ac1f4817a8942aa775835c42194b1b178bd8bd2ca15ef8fd602a"
+    },
+    {
+      "file": "interaction.js",
+      "bytes": 3924,
+      "sha256": "f9f86a1354219301b5ed12a19c291fb0d2e57b10c7b72aaaaf8ba9ea7b7546c7"
+    },
+    {
+      "file": "design-import.js",
+      "bytes": 13729,
+      "sha256": "5a2d469b15877e90b2e2a68aa61a33e014f649b4a73d4021de12a985a3782490"
     },
     {
       "file": "config.js",
@@ -29,8 +44,8 @@
     },
     {
       "file": "engine-worker.js",
-      "bytes": 4173,
-      "sha256": "bb1647b5c83fd8d4e094c8572b636ccf6f5c8659b35d6caad0a33f222f35d6a2"
+      "bytes": 5416,
+      "sha256": "af22ef4b10559931c6a320d66357a88bf1fb706f45ecadb1e75ad603938a78d9"
     },
     {
       "file": "curve-input.js",
@@ -49,13 +64,13 @@
     },
     {
       "file": "README.md",
-      "bytes": 4742,
-      "sha256": "329fbd6429fafd55a47f9e4bf8085a3e04efb1cb8b1f6146a0b778f514fc4b43"
+      "bytes": 8854,
+      "sha256": "7e566a248566622419705215d195209b868b73a3ca269e08dfb6e52f9df4b041"
     },
     {
       "file": "VALIDATION.md",
-      "bytes": 4020,
-      "sha256": "90f8a3815e2e728bd7ba03175869cda61fe1944219e694396f835b1b274eb896"
+      "bytes": 5836,
+      "sha256": "27e3dea24d2ab3dea5d80f1e338cbb56daef2969b9950730229b4df831355534"
     },
     {
       "file": ".nojekyll",

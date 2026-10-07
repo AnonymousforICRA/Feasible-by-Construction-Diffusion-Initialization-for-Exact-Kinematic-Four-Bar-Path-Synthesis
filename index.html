@@ -11,13 +11,14 @@
 </head>
 <body>
   <header class="page-header">
-    <div class="eyebrow"><span class="brand-mark" aria-hidden="true">◈</span> INTERACTIVE RESEARCH DEMONSTRATION</div>
-    <h1>Feasible-by-Construction Diffusion Initialization for Exact Kinematic Four-Bar Path Synthesis</h1>
-    <p class="intro">Explore a single-actuator mechanism, its target path, and the trajectory it can actually realize.</p>
+    <div class="header-meta"><div class="eyebrow"><span class="brand-mark" aria-hidden="true">◈</span> INTERACTIVE RESEARCH DEMONSTRATION</div><span class="version-label">Post-submission preview</span></div>
+    <h1>Feasible-by-Construction Four-Bar Path Synthesis:<br class="title-break"> Diffusion Initialization and Exact-Kinematic Refinement</h1>
+    <p class="intro">Explore feasible mechanisms, compare initialization with refinement, and take your design with you.</p>
   </header>
 
   <main class="workspace">
-    <aside class="sidebar" aria-label="Demonstration controls">
+    <aside id="design-controls" class="sidebar" aria-label="Demonstration controls">
+      <a class="mobile-controls-link" href="#design-view">Back to the mechanism canvas <span aria-hidden="true">↑</span></a>
       <div class="mode-switch" role="group" aria-label="Demonstration mode">
         <button id="mode-recorded" type="button" class="mode-button active" aria-pressed="true">Known mechanisms</button>
         <button id="mode-browser" type="button" class="mode-button" aria-pressed="false">Draw a path</button>
@@ -28,12 +29,14 @@
         <p class="help">These paths are constructed from known legal mechanisms using exact forward kinematics. They are not model predictions.</p>
         <div id="example-list" class="example-list" aria-label="Known mechanism presets"><p class="help">Loading known mechanisms…</p></div>
         <div class="disclosure"><strong>Constructed preset · no model inference</strong><span>Use the target below to generate new candidates with the browser model.</span></div>
+        <button id="run-example" class="primary-button wide" type="button">Run this example · Quality</button>
+        <p class="small-note example-run-note">Loads the browser model, then runs new CPU inference on this target. First download: about 18 MB. The known mechanism is never substituted for a prediction.</p>
         <button id="use-target" class="secondary-button wide" type="button">Use this target for inference</button>
       </section>
 
       <section id="browser-panel" hidden>
         <div class="section-heading"><span class="step-number">01</span><h2>Sketch a closed path</h2></div>
-        <p class="help">Draw one continuous stroke with a mouse or touch. The sketch is a closed polyline: a straight segment joins the end to the start, with no smoothing or corner removal.</p>
+        <p class="help">Choose Draw above the canvas, then sketch one continuous stroke with a mouse or touch. A straight segment closes the path, with no smoothing or corner removal. Inspect mode lets you move the view without changing your sketch.</p>
         <div class="engine-status"><span id="engine-indicator" class="status-dot"></span><strong id="engine-state">Model not loaded</strong></div>
         <p id="engine-detail" class="help" role="status" aria-live="polite">Inference uses this device’s CPU through WebAssembly. Initial model and runtime download: about 18 MB. No GPU or inference server is required.</p>
         <button id="load-model" class="secondary-button wide" type="button">Load browser model</button>
@@ -42,6 +45,7 @@
           <button id="clear-sketch" class="secondary-button" type="button">Clear sketch</button>
           <button id="generate" class="primary-button" type="button" disabled>Generate</button>
         </div>
+        <button id="cancel-inference" class="secondary-button wide cancel-button" type="button" hidden>Cancel inference</button>
         <p class="small-note">CPU computation may take time, especially in Quality mode. Failed inference never substitutes a known mechanism.</p>
       </section>
 
@@ -55,29 +59,89 @@
         <div class="section-heading"><span class="step-number">03</span><h2>Inspect the mechanism</h2></div>
         <div id="error-card" class="error-card"><span>Web similarity error</span><strong id="error-value">—</strong></div>
         <p id="metric-note" class="small-note">A similarity-aligned sketch-fit measure, not the paper benchmark metric. Lower is better.</p>
-        <dl id="inference-audit" class="parameter-list" hidden></dl>
-        <dl id="parameter-list" class="parameter-list"></dl>
-        <p class="small-note">Canonical lengths are normalized to the ground link, r₁ = 1. P is fixed to the coupler.</p>
+        <details id="technical-details" class="technical-details">
+          <summary>Parameters &amp; run details</summary>
+          <dl id="inference-audit" class="parameter-list" hidden></dl>
+          <dl id="parameter-list" class="parameter-list"></dl>
+          <p class="small-note">Canonical lengths are normalized to the ground link, r₁ = 1. P is fixed to the coupler.</p>
+        </details>
+      </section>
+
+      <section class="design-library" aria-labelledby="library-heading">
+        <div class="section-heading"><h2 id="library-heading">Your design library</h2><span class="local-label">LOCAL ONLY</span></div>
+        <p class="help">Open an exported JSON design to inspect its geometry and saved settings.</p>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+        <button id="import-design" class="secondary-button wide" type="button">Import design JSON</button>
+        <button id="replay-design" class="secondary-button wide" type="button" disabled>Run again with saved settings</button>
+        <p id="import-note" class="small-note">Files stay on your device. Imported records are not new computations or independently verified measurements.</p>
+        <details class="history-details">
+          <summary>Recent designs <span>this tab</span></summary>
+          <p id="history-empty" class="small-note">Your last five designs will appear here. Export a JSON file to keep one after closing this tab.</p>
+          <div id="history-list" class="history-list" aria-label="Recent designs in this tab"></div>
+          <button id="clear-history" class="text-button history-clear" type="button" disabled>Clear recent designs</button>
+          <p class="small-note history-privacy">No account, server storage, or browser storage. This list is kept only in the current tab.</p>
+        </details>
       </section>
     </aside>
 
-    <section class="viewer" aria-label="Mechanism viewer">
+    <section id="design-view" class="viewer" aria-label="Mechanism viewer">
       <div class="viewer-header">
         <div><span id="result-kind" class="result-kind">CONSTRUCTED PRESET · NO MODEL INFERENCE</span><h2 id="result-title">Four-bar path synthesis</h2></div>
         <button id="fit-view" type="button" class="text-button">Fit view <span aria-hidden="true">↗</span></button>
       </div>
-      <div class="canvas-wrap">
-        <canvas id="mechanism-canvas" aria-label="Target path, realized coupler trajectory, and animated four-bar mechanism"></canvas>
-        <div id="canvas-empty" class="canvas-empty"><span class="empty-symbol" aria-hidden="true">↗</span><strong>Loading the demonstration</strong><span>Known mechanisms will appear here.</span></div>
-        <div id="drawing-hint" class="drawing-hint" hidden>Draw a closed path here</div>
-        <div class="canvas-legend"><span><i class="legend-target"></i>Target</span><span><i class="legend-trajectory"></i>Realized trajectory</span><span><i class="legend-link"></i>Mechanism</span></div>
+      <a class="mobile-controls-link" href="#design-controls">Draw a path or choose a target <span aria-hidden="true">↓</span></a>
+      <section id="comparison-panel" class="comparison-panel" aria-label="Same-pool initialization and refinement comparison" hidden>
+        <div class="comparison-metrics">
+          <div class="comparison-metric"><span>Initial best</span><strong id="initial-error">—</strong></div>
+          <div class="comparison-metric retained"><span>Retained best</span><strong id="refined-error">—</strong></div>
+          <div class="comparison-metric reduction"><span>Relative reduction</span><strong id="improvement-value">—</strong></div>
+        </div>
+        <p id="comparison-note" class="small-note">Best errors across the same candidate pool, not the currently selected candidate. The original best is retained if refinement does not improve it.</p>
+      </section>
+      <div id="comparison-controls" class="comparison-controls" hidden>
+        <div class="view-toggle" role="group" aria-label="Displayed mechanism">
+          <button id="view-selected" class="view-button active" type="button" aria-pressed="true">Selected candidate</button>
+          <button id="view-initial" class="view-button" type="button" aria-pressed="false">Initial best</button>
+        </div>
+        <span id="active-view-label" class="active-view-label">Selected candidate</span>
+      </div>
+      <div class="interaction-toolbar" aria-label="Canvas interaction controls">
+        <div class="interaction-actions">
+          <div class="canvas-tool-switch" role="group" aria-label="Canvas tool">
+            <button id="tool-inspect" class="tool-button active" type="button" aria-pressed="true">Inspect</button>
+            <button id="tool-draw" class="tool-button" type="button" aria-pressed="false" disabled>Draw</button>
+          </div>
+          <button id="undo-sketch" class="secondary-button" type="button" disabled>Undo sketch</button>
+          <div class="zoom-controls" role="group" aria-label="Canvas zoom">
+            <button id="zoom-out" class="zoom-button" type="button" aria-label="Zoom out">−</button>
+            <button id="zoom-in" class="zoom-button" type="button" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <p id="interaction-hint" class="interaction-hint">Inspect: drag to pan; use − / + to zoom. Choose Draw to change the target.</p>
+      </div>
+      <div class="visual-stage">
+        <div class="canvas-wrap">
+          <canvas id="mechanism-canvas" tabindex="0" aria-describedby="interaction-hint" aria-label="Target path, realized coupler trajectory, and animated four-bar mechanism"></canvas>
+          <div id="canvas-empty" class="canvas-empty"><span class="empty-symbol" aria-hidden="true">↗</span><strong>Loading the demonstration</strong><span>Known mechanisms will appear here.</span></div>
+          <div id="drawing-hint" class="drawing-hint" hidden>Draw a closed path here</div>
+          <div class="canvas-legend"><span><i class="legend-target"></i>Target</span><span id="initial-legend-item" hidden><i class="legend-initial"></i>Initial best</span><span><i class="legend-trajectory"></i>Realized trajectory</span><span><i class="legend-link"></i>Mechanism</span></div>
+        </div>
+        <aside class="path-panel" aria-label="Path comparison close-up">
+          <div class="path-panel-heading"><span class="eyebrow">GEOMETRY</span><h3>Path close-up</h3></div>
+          <div class="path-canvas-wrap"><canvas id="path-canvas" aria-label="Close-up of the target path, initial path when available, and selected realized trajectory"></canvas></div>
+          <p class="small-note">Equal scale on both axes. All paths share one geometric view; deviations are not exaggerated.</p>
+        </aside>
       </div>
       <div class="playback-controls">
         <button id="play-pause" type="button" class="play-button" disabled aria-label="Play animation">Play</button>
         <label class="phase-control" for="phase"><span>Crank phase <output id="phase-value" for="phase">0°</output></span><input id="phase" type="range" min="0" max="1000" step="1" value="0" disabled></label>
         <label class="speed-control" for="speed">Speed<select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
       </div>
-      <div class="visibility-controls"><label><input id="show-mechanism" type="checkbox" checked> Show mechanism</label><label><input id="show-target" type="checkbox" checked> Show target</label><span>Uniform-phase visual playback · not a motion-control plan</span></div>
+      <div class="visibility-controls"><label><input id="show-mechanism" type="checkbox" checked> Show mechanism</label><label><input id="show-target" type="checkbox" checked> Show target</label><label id="initial-overlay-control" hidden><input id="show-initial" type="checkbox" checked> Show initial path</label><span>Uniform-phase visual playback · not a motion-control plan</span></div>
+      <div class="export-controls" role="group" aria-label="Export the current design">
+        <div><strong>Keep this design</strong><span>Export the selected candidate, with its target and run settings.</span></div>
+        <div class="export-actions"><button id="export-json" type="button" class="secondary-button" disabled>JSON</button><button id="export-svg" type="button" class="secondary-button" disabled>SVG</button><button id="export-png" type="button" class="secondary-button" disabled>PNG</button></div>
+      </div>
       <p id="viewer-status" class="viewer-status" role="status" aria-live="polite">Loading exact-kinematic presets…</p>
     </section>
   </main>
